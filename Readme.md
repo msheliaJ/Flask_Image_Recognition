@@ -1,59 +1,58 @@
 # Hand Digit Image Recognition
 
-This web app is made using Flask framework and is all about predicting the hand sign digit images based on the deep learning model trained using transfer learning.
+A Flask web app that predicts the digit (0–9) shown in a hand-sign image, using a
+Keras model trained with transfer learning (`digit_model.h5`).
 
-![Python](https://img.shields.io/badge/python-8338ec)
-![Keras](https://img.shields.io/badge/keras-219ebc)
-![Numpy](https://img.shields.io/badge/numpy-ffafcc)
-![Pillow](https://img.shields.io/badge/pillow-00bbf9)
-![Flask](https://img.shields.io/badge/flask-f72585)
-![Bootstrap](https://img.shields.io/badge/bootstrap-57cc99)
+This fork adds code-quality checks (Pylint, pre-commit), a pytest suite and a
+GitHub Actions CI workflow to the original project by Sachin-crypto.
 
-# Glimpse
+## Requirements
 
-https://user-images.githubusercontent.com/72191416/201943098-c8f5fd8b-ec7d-4e5d-883d-8b69109b946f.mp4
+- **Python 3.10** (TensorFlow 2.10 does not support Python 3.11 or newer)
+- Git
 
-# Dependencies
+## Setup
 
-- Flask
-- TensorFlow (Keras)
-- Numpy
-- Pillow (PIL)
+```bash
+git clone <your-fork-url>
+cd Flask_Image_Recognition
 
-## UI Framework
+python3.10 -m venv venv          # Windows: py -3.10 -m venv venv
+source venv/bin/activate         # Windows: venv\Scripts\activate
 
-- Bootstrap
-
-# Get Started
-
-Clone the repository in your project directory.
-
-```commandline
-git clone https://github.com/Sachin-crypto/Flask_Image_Recognition.git
-```
-OR
-
-Download as **[ZIP](https://github.com/Sachin-crypto/Flask_Image_Recognition/archive/refs/heads/main.zip)** file and extract it in your project directory.
-
-# Install Dependencies
-
-Install the dependencies from the **requirements.txt** file.
-
-```commandline
-pip install -r requirements.txt
+pip install -r requirements.txt          # app only
+pip install -r requirements-dev.txt      # app + Pylint, pytest, pre-commit
 ```
 
-# Run
+## Run
 
-**cd** into the current directory and run the script.
-
-```commandline
-flask --app app.py run --debug
+```bash
+python app.py                    # http://127.0.0.1:9000
+# or
+flask --app app.py run --debug   # http://127.0.0.1:5000
 ```
-Click [here](https://geekpython.in/run-flask-app-from-the-command-line-in-windows) to get the detailed guide on running the Flask app from the command line.
 
-# Test
+Open the page, choose an image from `test_images/<digit>/`, and click **Submit**.
 
-- Choose an image from the test images folder.
-- You will see a preview of the uploaded image.
-- Click on **Submit** button and see the magic.
+## Code quality
+
+```bash
+pylint app.py model.py tests     # configured in .pylintrc (fail-under 9.0)
+pre-commit install               # run checks automatically on every commit
+pre-commit run --all-files       # run every hook manually
+```
+
+## Tests
+
+```bash
+pytest                           # all tests
+pytest -m "not slow"             # skip the tests that run the real model
+```
+
+Route tests mock the model so they run quickly; tests marked `slow` load
+`digit_model.h5` and check predictions on sample images.
+
+## Continuous integration
+
+`.github/workflows/ci.yml` runs on every push and pull request to `main`:
+checkout → Python 3.10 → install dependencies → Pylint → pytest.
