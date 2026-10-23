@@ -1,20 +1,28 @@
 """Loads the trained Keras model and provides preprocessing and prediction helpers."""
+from pathlib import Path
+
 from keras.models import load_model
 from keras.utils import img_to_array
 import numpy as np
 from PIL import Image
 
+MODEL_PATH = Path(__file__).resolve().parent / "digit_model.h5"
+IMG_SIZE = (224, 224)
+
 # Loaded once at import time and reused for every request.
-model = load_model("digit_model.h5")
+model = load_model(MODEL_PATH)
 
 
 def preprocess_img(img_path):
-    """Open an image and convert it to a normalised (1, 224, 224, 3) array."""
-    op_img = Image.open(img_path)
-    img_resize = op_img.resize((224, 224))
+    """Open an image and convert it to a normalised (1, 224, 224, 3) array.
+
+    Images are converted to RGB first so greyscale, palette and transparent
+    (RGBA) uploads match the three-channel input the model was trained on.
+    """
+    with Image.open(img_path) as op_img:
+        img_resize = op_img.convert("RGB").resize(IMG_SIZE)
     img2arr = img_to_array(img_resize) / 255.0
-    img_reshape = img2arr.reshape(1, 224, 224, 3)
-    return img_reshape
+    return img2arr.reshape(1, *IMG_SIZE, 3)
 
 
 def predict_result(predict):
