@@ -1,0 +1,23 @@
+# Checks run automatically on `git commit` after `pre-commit install`.
+# Run them on every file manually with: pre-commit run --all-files
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files   # blocks accidental commits over 500 KB
+      - id: check-merge-conflict
+      - id: debug-statements          # catches leftover breakpoint()/pdb
+
+  - repo: local
+    hooks:
+      # Uses the Pylint installed in your virtual environment so it can
+      # resolve Flask/Keras imports, and the project's .pylintrc.
+      - id: pylint
+        name: pylint
+        entry: pylint
+        language: system
+        types: [python]
+        require_serial: true
