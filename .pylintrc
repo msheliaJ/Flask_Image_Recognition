@@ -1,0 +1,25 @@
+# Pylint configuration for the Flask hand-sign digit recognition app.
+# Starts from Pylint defaults and only changes what this project needs.
+
+[MAIN]
+# Python version used by the project (TensorFlow 2.10 requires <= 3.10).
+py-version=3.10
+# Fail the run (non-zero exit) if the overall score drops below this.
+fail-under=9.0
+ignore=venv,.venv,static,templates,test_images
+
+[MESSAGES CONTROL]
+# Nothing is disabled globally, so the application code is held to the full
+# default rule set. The few test-specific exceptions are written as comments
+# at the top of the test files where they apply.
+
+[FORMAT]
+max-line-length=100
+
+[DESIGN]
+# Flask view functions and small helpers; defaults are fine except for tests.
+max-args=6
+
+[TYPECHECK]
+# TensorFlow/Keras build many members dynamically; avoid false no-member errors.
+generated-members=tensorflow.*,keras.*,np.*,numpy.*
